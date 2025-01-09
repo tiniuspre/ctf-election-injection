@@ -1,0 +1,85 @@
+<!-- templates/dashboard.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h2>Welcome to your dashboard, {{ username }}!</h2>
+    {% if current_vote %}
+        <p>Your current vote: <strong>{{ current_vote.capitalize() }}</strong></p>
+        <p><a href="{{ url_for('vote') }}">Change your vote</a></p>
+    {% else %}
+        <p>You have not voted yet.</p>
+        <p><a href="{{ url_for('vote') }}">Vote now</a></p>
+    {% endif %}
+
+    <div class="vote-statistics">
+        <h3>Voting Statistics</h3>
+        <div class="chart-container">
+            <canvas id="voteChart"></canvas>
+        </div>
+        <ul>
+            {% for candidate, percentage in vote_counts.items() %}
+                <li>{{ candidate }}: {{ percentage }}%</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    </div>
+    {% if username == "admin" %}
+    <div class="user-votes">
+        <h3>All Users' Votes</h3>
+        <h4>{{ flag_1 }}</h4>
+        <h4>{{ flag_2 }}</h4>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Vote</th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.vote.capitalize() if user.vote else "No Vote" }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        const voteData = {
+            labels: [{% for candidate in vote_counts.keys() %}'{{ candidate }}',{% endfor %}],
+            datasets: [{
+                data: [{% for percentage in vote_counts.values() %}{{ percentage }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',    // Trump - Red
+                    'rgba(54, 162, 235, 0.6)',    // Harris - Blue
+                    'rgba(255, 206, 86, 0.6)'     // Borat - Yellow
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        const voteChart = new Chart(ctx, {
+            type: 'pie',
+            data: voteData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allows the chart to adjust based on container size
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Voting Statistics'
+                    }
+                }
+            },
+        });
+    </script>
+{% endblock %}

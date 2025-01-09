@@ -1,0 +1,6 @@
+services:
+  voting:
+    build:
+      context: ..
+    ports:
+      - "8080:5000"

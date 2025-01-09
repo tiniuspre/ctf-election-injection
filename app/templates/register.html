@@ -1,0 +1,22 @@
+<!-- templates/register.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h2>Register</h2>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('register') }}">
+        <label>Username:</label>
+        <input type="text" name="username" required>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+
+        <label>CAPTCHA:</label>
+        <img src="{{ url_for('serve_captcha') }}" alt="CAPTCHA"><br><br>
+        <input type="text" name="captcha" required>
+
+        <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+{% endblock %}

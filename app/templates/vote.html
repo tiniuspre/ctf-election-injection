@@ -1,0 +1,49 @@
+<!-- templates/vote.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h2>Vote for Your Favorite Candidate</h2>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if current_vote %}
+        <p>Your current vote: <strong>{{ current_vote }}</strong></p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('vote') }}">
+        <div class="candidates">
+            <div class="candidate">
+                <label>
+                    <img src="{{ url_for('static', filename='images/trump.png') }}" alt="trump" onclick="selectCandidate('trump')">
+                    <input type="radio" name="candidate" value="trump" {% if current_vote == 'trump' %}checked{% endif %} style="display:none;">
+                </label>
+                <p>Donald Trump</p>
+            </div>
+            <div class="candidate">
+                <label>
+                    <img src="{{ url_for('static', filename='images/harris.png') }}" alt="harris" onclick="selectCandidate('harris')">
+                    <input type="radio" name="candidate" value="harris" {% if current_vote == 'harris' %}checked{% endif %} style="display:none;">
+                </label>
+                <p>Kamala Harris</p>
+            </div>
+            <div class="candidate">
+                <label>
+                    <img src="{{ url_for('static', filename='images/borat.png') }}" alt="borat" onclick="selectCandidate('borat')">
+                    <input type="radio" name="candidate" value="borat" {% if current_vote == 'borat' %}checked{% endif %} style="display:none;">
+                </label>
+                <p>Borat</p>
+            </div>
+        </div>
+        <button type="submit">Submit Vote</button>
+    </form>
+    <p><a href="{{ url_for('dashboard') }}">Back to Dashboard</a></p>
+
+    <script>
+        function selectCandidate(candidate) {
+            const radios = document.getElementsByName('candidate');
+            radios.forEach(radio => {
+                if (radio.value === candidate) {
+                    radio.checked = true;
+                }
+            });
+        }
+    </script>
+{% endblock %}
